@@ -1,531 +1,230 @@
-﻿'use client';
+'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { 
+  Camera, 
+  Monitor, 
+  Layers, 
+  Sparkles, 
+  ChevronRight,
+  ArrowRight
+} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
-import SectionContainer from '@/components/SectionContainer';
+import './gold.css';
+import GoldBackground from '../components/celestriyal/GoldBackground';
+import SmokeSequence from '../components/celestriyal/SmokeSequence';
+import SpotlightCard from '../components/SpotlightCard';
 
-// --- Utility Components ---
-
-// 1. 3D Tilt Card
-function TiltCard({ children, className, onClick, layoutId }: any) {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const handleMouseMove = ({ currentTarget, clientX, clientY }: any) => {
-    const { left, top, width, height } = currentTarget.getBoundingClientRect();
-    mouseX.set(clientX - left - width / 2);
-    mouseY.set(clientY - top - height / 2);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
-
-  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [4, -4]), { stiffness: 100, damping: 30 });
-  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-4, 4]), { stiffness: 100, damping: 30 });
-  const scale = useSpring(useTransform(mouseX, [-300, 300], [1, 1.02]), { stiffness: 100, damping: 30 });
-
-  return (
-    <motion.div
-      className={elative perspective-1000 cursor-zoom-in \}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-      layoutId={layoutId}
-      whileHover={{ zIndex: 20 }}
-    >
-      <motion.div
-        style={{ rotateX, rotateY, scale, transformStyle: "preserve-3d" }}
-        className="w-full h-full"
-      >
-        {children}
-      </motion.div>
-    </motion.div>
-  );
-}
-
-// 2. Background Grid Pattern
-function BackgroundGrid() {
-  return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-      <div className="absolute inset-0 bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black_70%)]" />
-      
-      {/* Added more background elements */}
-      <div className="absolute top-1/4 left-10 w-px h-32 bg-gradient-to-b from-transparent via-[#50C878]/30 to-transparent" />
-      <div className="absolute bottom-1/3 right-20 w-32 h-px bg-gradient-to-r from-transparent via-[#50C878]/30 to-transparent" />
-      <div className="absolute top-10 right-1/4 w-2 h-2 rounded-full bg-[#50C878]/20 animate-pulse" />
+const ShowcaseItem = ({ src, title, delay }: { src: string, title: string, delay: number }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.9 }}
+    whileInView={{ opacity: 1, scale: 1 }}
+    viewport={{ once: true }}
+    transition={{ duration: 1, delay }}
+    className="group relative overflow-hidden rounded-[3rem] border border-white/5 h-[400px] md:h-[600px]"
+  >
+    <Image 
+      src={src} 
+      alt={title} 
+      fill 
+      className="object-cover transition-transform duration-[2000ms] group-hover:scale-110"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
+    <div className="absolute bottom-10 left-10 z-10">
+      <h4 className="text-2xl font-black text-white uppercase tracking-tighter">{title}</h4>
+      <div className="mt-2 w-12 h-[1px] bg-[#f6e27a]"></div>
     </div>
-  );
-}
+  </motion.div>
+);
 
-// 3. Floating Notification (Darker Theme)
-function FloatingNotification({ text, icon, delay = 0, x = 0, y = 0 }: any) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.8 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay, duration: 0.8, type: "spring" }}
-      className="absolute z-20 flex items-center gap-3 px-4 py-3 bg-[#121212]/90 backdrop-blur-xl border border-[#50C878]/20 rounded-2xl shadow-2xl"
-      style={{ left: x, top: y }}
+const ServiceTile = ({ 
+  title, 
+  desc, 
+  icon: Icon, 
+  className 
+}: { 
+  title: string, 
+  desc: string, 
+  icon: any, 
+  className?: string 
+}) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className={className}
+  >
+    <SpotlightCard 
+      className="h-full group bg-white/[0.01] border-white/5 hover:border-[#f6e27a]/30 transition-all p-8 md:p-12 rounded-[2.5rem]"
+      spotlightColor="rgba(246, 226, 122, 0.08)"
     >
-      <div className="w-8 h-8 rounded-full bg-[#50C878]/10 flex items-center justify-center text-[#50C878]">
-        {icon}
-      </div>
-      <div className="flex flex-col">
-        <span className="text-xs text-zinc-200 font-medium">{text}</span>
-        <span className="text-[10px] text-zinc-500">Just now</span>
-      </div>
-    </motion.div>
-  );
-}
-
-// 4. Code Snippet
-function CodeSnippet({ className }: any) {
-    return (
-        <div className={bsolute p-4 rounded-xl bg-[#0F0F0F] border border-white/5 font-mono text-[10px] leading-relaxed text-zinc-500 shadow-2xl \}>
-            <div className="flex gap-1.5 mb-2">
-                <div className="w-2 h-2 rounded-full bg-red-500/20" />
-                <div className="w-2 h-2 rounded-full bg-yellow-500/20" />
-                <div className="w-2 h-2 rounded-full bg-green-500/20" />
-            </div>
-            <p><span className="text-purple-400">data</span> class <span className="text-yellow-200">User</span>(</p>
-            <p className="pl-2"><span className="text-blue-400">val</span> uid: <span className="text-[#50C878]">String</span>,</p>
-            <p className="pl-2"><span className="text-blue-400">val</span> role: <span className="text-[#50C878]">Role</span> = <span className="text-orange-400">STUDENT</span></p>
-            <p>)</p>
+      <div className="flex flex-col h-full justify-between">
+        <div>
+          <div className="mb-6 p-4 rounded-2xl bg-white/5 border border-white/10 w-fit group-hover:scale-110 transition-transform">
+            <Icon className="w-8 h-8 text-[#f6e27a]" />
+          </div>
+          <h3 className="text-3xl font-black text-white uppercase tracking-tighter mb-4 group-hover:text-gold-liquid transition-colors">
+            {title}
+          </h3>
+          <p className="text-white/40 font-light leading-relaxed italic">
+            {desc}
+          </p>
         </div>
-    )
-}
-
-// 5. Infinite Tech Marquee
-function InfiniteMarquee() {
-    const techs = ["Kotlin", "Firebase", "Room DB", "Coroutines", "Flow", "Hilt", "Retrofit", "Jetpack", "Material You", "Git"];
-    return (
-        <div className="relative w-full overflow-hidden py-10 bg-[#0A0A0A] border-y border-white/5 backdrop-blur-sm">
-            <motion.div 
-                className="flex gap-16 whitespace-nowrap"
-                animate={{ x: [0, -1000] }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            >
-                {[...techs, ...techs, ...techs].map((tech, i) => (
-                    <span key={i} className="text-2xl md:text-4xl font-bold text-zinc-800 uppercase tracking-widest hover:text-[#50C878] transition-colors cursor-default">
-                        {tech}
-                    </span>
-                ))}
-            </motion.div>
-        </div>
-    );
-}
-
-// 6. Interactive Performance Mode Demo (Darker Theme)
-function PerformanceDemo() {
-    const [isPerformanceMode, setIsPerformanceMode] = useState(false);
-
-    return (
-        <div className="w-full p-8 rounded-3xl border border-white/10 bg-[#080808] relative overflow-hidden group">
-            {/* Vibrant background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-[#50C878]/20 blur-3xl" />
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay" />
-            
-            <div className="relative z-10 flex flex-col items-center justify-center min-h-[400px] gap-8">
-
-                {/* The UI Card changing based on mode */}
-                <motion.div 
-                    animate={{ 
-                        backdropFilter: isPerformanceMode ? "blur(0px)" : "blur(12px)",
-                        backgroundColor: isPerformanceMode ? "#111" : "rgba(20, 20, 20, 0.6)",
-                        borderColor: isPerformanceMode ? "#333" : "rgba(80, 200, 120, 0.2)"
-                    }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full max-w-sm p-6 rounded-2xl border shadow-2xl"
-                >
-                    <div className="h-4 w-1/3 bg-white/10 rounded-full mb-4" />
-                    <div className="space-y-3">
-                        <div className="h-2 w-full bg-white/5 rounded-full" />
-                        <div className="h-2 w-5/6 bg-white/5 rounded-full" />
-                    </div>
-                    <div className="mt-6 flex justify-between items-center">
-                        <div className="h-8 w-8 rounded-full bg-[#50C878]/10" />
-                        <div className="px-4 py-1.5 rounded-full bg-white/5 text-[10px] text-zinc-500 border border-white/5">
-                            {isPerformanceMode ? "Solid Surface" : "Glassmorphism"}
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Toggle Control */}
-                <div className="flex flex-col items-center gap-3">
-                    <button 
-                        onClick={() => setIsPerformanceMode(!isPerformanceMode)}
-                        className={elative w-16 h-8 rounded-full transition-colors duration-300 \}
-                    >
-                        <motion.div 
-                            animate={{ x: isPerformanceMode ? 32 : 4 }}
-                            className="absolute top-1 w-6 h-6 bg-white rounded-full shadow-md"
-                        />
-                    </button>
-                    <p className="text-sm font-mono text-zinc-500">
-                        PERFORMANCE MODE: <span className={isPerformanceMode ? "text-[#50C878]" : "text-zinc-300"}>{isPerformanceMode ? "ON" : "OFF"}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-// 7. Simulated Chat Feed
-function SimulatedChat() {
-    const messages = [
-        { id: 1, text: "Hey! Did you check the new timetable?", sender: "them", delay: 0 },
-        { id: 2, text: "Yeah, looking good. We have a free slot on Friday!", sender: "me", delay: 1.5 },
-        { id: 3, text: "Awesome. Btw, uploaded the assignment?", sender: "them", delay: 3 },
-        { id: 4, text: "Just did. Syncing is super fast now 🚀", sender: "me", delay: 4.5 },
-    ];
-
-    return (
-        <div className="w-full max-w-md mx-auto space-y-4 font-sans">
-            {messages.map((msg) => (
-                <motion.div
-                    key={msg.id}
-                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ delay: msg.delay, duration: 0.5 }}
-                    viewport={{ once: true }}
-                    className={lex \}
-                >
-                    <div className={max-w-[80%] px-5 py-3 rounded-2xl text-sm leading-relaxed shadow-lg \}>
-                        {msg.text}
-                    </div>
-                </motion.div>
-            ))}
-            <motion.div 
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 6 }}
-                viewport={{ once: true }}
-                className="flex gap-2 items-center text-xs text-zinc-500 pl-4"
-            >
-                <span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce" />
-                <span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce [animation-delay:0.2s]" />
-                <span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce [animation-delay:0.4s]" />
-                Typing...
-            </motion.div>
-        </div>
-    )
-}
-
-// 8. Random Glows
-function RandomGlows() {
-    return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-[10%] left-[5%] w-[400px] h-[400px] bg-[#50C878]/5 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '7s' }} />
-            <div className="absolute top-[40%] right-[10%] w-[300px] h-[300px] bg-[#50C878]/5 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
-            <div className="absolute bottom-[10%] left-[15%] w-[500px] h-[500px] bg-[#50C878]/5 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '8s', animationDelay: '1s' }} />
-        </div>
-    );
-}
-
-// Main Page Component
-export default function SyncProjectPage() {
-  const [selectedImage, setSelectedImage] = useState<any>(null);
-  const containerRef = useRef(null);
-  
-  const { scrollYProgress } = useScroll({ target: containerRef });
-  const yHero = useTransform(scrollYProgress, [0, 0.2], [0, -100]);
-  const opacityHero = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-
-  const smoothEntry = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
-  };
-
-  const stagger = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.15 } }
-  };
-
-  return (
-    <div ref={containerRef} className="bg-black min-h-screen text-[#EAEAEA] selection:bg-[#50C878] selection:text-black overflow-x-hidden relative">
-      
-      <BackgroundGrid />
-      <RandomGlows />
-
-      {/* Lightbox Overlay */}
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
-            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
-            onClick={() => setSelectedImage(null)}
-          >
-            <motion.div
-              layoutId={selectedImage.layoutId}
-              className="relative w-auto h-auto max-w-[95vw] max-h-[95vh]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Image
-                src={selectedImage.src}
-                alt={selectedImage.alt}
-                width={1920}
-                height={1080}
-                className="object-contain w-full h-full rounded-lg shadow-2xl"
-              />
-              <button 
-                onClick={() => setSelectedImage(null)}
-                className="absolute -top-12 right-0 text-white/50 hover:text-white transition-colors"
-              >
-                CLOSE
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center pt-20 px-4">
         
-        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-[#50C878]/10 rounded-full blur-[120px] animate-pulse pointer-events-none" />
+        <div className="mt-8 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.4em] text-white/20 group-hover:text-[#f6e27a] transition-colors">
+          Capability — 01 <ChevronRight className="w-3 h-3" />
+        </div>
+      </div>
+    </SpotlightCard>
+  </motion.div>
+);
 
-        <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-          
-          <motion.div 
-            style={{ y: yHero, opacity: opacityHero }}
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="space-y-8 text-center lg:text-left"
+export default function CelestriyalPage() {
+  return (
+    <main className="relative min-h-screen bg-[#050505] text-white selection:bg-[#f6e27a] selection:text-black overflow-x-hidden">
+      
+      <GoldBackground />
+
+      {/* LUXURY NAV BAR */}
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-8 flex justify-between items-center mix-blend-difference">
+        <Link href="/sync" className="text-xl font-bold tracking-[0.3em] uppercase hover:text-[#f6e27a] transition-colors">
+          Ashfaq — 
+        </Link>
+        <Link href="/" className="text-xl font-black tracking-[0.3em] uppercase text-[#f6e27a] hover:text-gold-liquid transition-all">
+          Celestriyal
+        </Link>
+        <div className="hidden md:flex gap-12 font-mono text-[10px] tracking-[0.5em] uppercase text-white/60">
+          <Link href="#services" className="hover:text-[#f6e27a] transition-colors">Capabilities</Link>
+          <Link href="#contact" className="hover:text-[#f6e27a] transition-colors">Inquiry</Link>
+        </div>
+      </nav>
+
+      {/* HERO SECTION */}
+      <section className="h-screen flex flex-col items-center justify-center px-6 relative">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: "circOut" }}
+          className="text-center z-10"
+        >
+          <motion.h1 
+            className="text-[12vw] font-black leading-none tracking-tighter uppercase text-gold-liquid gold-glint-pro px-12 pb-4"
           >
-            <motion.div variants={smoothEntry} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#50C878]/10 border border-[#50C878]/20 text-[#50C878] text-xs font-mono tracking-wider">
-               <span className="w-2 h-2 rounded-full bg-[#50C878] animate-pulse" />
-               V1.0.2 RELEASE
-            </motion.div>
-
-            <motion.h1 variants={smoothEntry} className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tighter leading-[0.9] text-white">
-              Sync
-            </motion.h1>
-            
-            <motion.p variants={smoothEntry} className="text-xl md:text-2xl text-zinc-400 max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
-              The <span className="text-white font-normal">ultimate campus companion</span>. <br/>
-              Built with Kotlin for speed, Firebase for scale, and glassmorphism for style.
-            </motion.p>
-            
-            <motion.div variants={smoothEntry} className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4">
-               <button onClick={() => document.getElementById('chat-section')?.scrollIntoView({ behavior: 'smooth' })} className="px-8 py-3 rounded-full bg-[#50C878] text-black font-bold hover:bg-[#40b068] transition-colors shadow-[0_0_30px_rgba(80,200,120,0.3)]">
-                 Explore Features
-               </button>
-               {/* TECH SHEET BUTTON */}
-               <Link href="/tech-sheet">
-                   <button className="px-8 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#50C878]/50 transition-all flex items-center gap-2 group">
-                     Tech Sheet
-                     <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                     </svg>
-                   </button>
-               </Link>
-            </motion.div>
-          </motion.div>
-
+            Celestriyal
+          </motion.h1>
           <motion.div 
-             initial={{ opacity: 0, x: 100 }}
-             animate={{ opacity: 1, x: 0 }}
-             transition={{ duration: 1.2, ease: "circOut" }}
-             className="relative flex justify-center lg:justify-end h-[600px] items-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.6 }}
+            transition={{ delay: 1 }}
+            className="mt-6 text-sm md:text-2xl font-light tracking-[0.5em] uppercase text-white/80"
           >
-             <div className="relative z-10">
-                 <TiltCard layoutId="hero-dashboard" onClick={() => setSelectedImage({ src: "/projects/sync/home-page.png", layoutId: "hero-dashboard", alt: "Home" })} className="w-[320px] md:w-[380px]">
-                    <Image 
-                        src="/projects/sync/home-page.png" 
-                        alt="Sync Dashboard" 
-                        width={400} 
-                        height={800}
-                        priority
-                        className="w-full h-auto rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/10"
-                    />
-                 </TiltCard>
-                 
-                 <FloatingNotification 
-                   text="New Assignment Added"
-                   icon={<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>}
-                   x="-20%" y="20%" delay={0.5} 
-                 />
-                 <FloatingNotification 
-                   text="Group Chat Active"
-                   icon={<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>}
-                   x="80%" y="60%" delay={0.8} 
-                 />
-             </div>
-             
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-[#50C878]/20 to-blue-500/20 rounded-full blur-[100px] -z-10" />
-             <CodeSnippet className="top-20 -left-10 z-0 opacity-60 hidden lg:block" />
+            Digital Couture <span className="mx-4">•</span> Cinematic Realism
           </motion.div>
+        </motion.div>
+
+        {/* Floating Background Element */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-[#f6e27a]/5 rounded-full blur-[150px] -z-10 animate-pulse"></div>
+      </section>
+
+      {/* MANIFESTO SECTION WITH SMOKE */}
+      <section className="relative">
+        <div className="absolute inset-0 z-0">
+          <SmokeSequence />
+        </div>
+        
+        <div className="relative z-10 py-48 px-6 md:px-24">
+          <div className="max-w-6xl mx-auto border-t border-white/10 pt-24 grid grid-cols-1 md:grid-cols-2 gap-20 bg-black/20 backdrop-blur-sm rounded-[4rem] p-12 md:p-24 border border-white/5">
+            <div className="space-y-12">
+              <span className="text-[#f6e27a] font-mono text-xs uppercase tracking-[0.5em]">The Manifesto</span>
+              <h2 className="text-4xl md:text-7xl font-bold leading-[0.9] text-white uppercase tracking-tighter">
+                We bridge the gap <br/> 
+                between <span className="italic text-white/20 underline decoration-1 underline-offset-[12px]">physical reality</span> <br/>
+                and digital dreams.
+              </h2>
+            </div>
+            <div className="flex flex-col justify-end">
+              <p className="text-xl md:text-2xl text-white/40 font-light leading-relaxed max-w-md italic">
+                "Founded on the principle of aesthetic precision, Celestriyal creates high-fidelity CGI, cinematic VFX, and architectural web experiences for the bold."
+              </p>
+              <div className="mt-12 w-24 h-[1px] bg-[#f6e27a]/50"></div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Infinite Marquee */}
-      <InfiniteMarquee />
+      {/* THE SHOWCASE (NEW IMAGES) */}
+      <section className="py-32 px-6 md:px-24 max-w-7xl mx-auto">
+        <div className="mb-24 text-center">
+           <h3 className="text-white/20 font-mono text-xs uppercase tracking-[1em] mb-6">Visual Portfolio</h3>
+           <h2 className="text-5xl md:text-8xl font-black text-gold-liquid uppercase tracking-tighter">The Showcase</h2>
+        </div>
 
-      {/* Feature Sections */}
-      <div className="space-y-48 py-32 relative z-10" id="chat-section">
-        
-        {/* 1. CHAT & REAL-TIME DEMO */}
-        <section className="container mx-auto px-4">
-           <div className="flex flex-col lg:flex-row items-center gap-20">
-              <motion.div 
-                 initial="hidden"
-                 whileInView="visible"
-                 viewport={{ once: true, margin: "-20%" }}
-                 variants={stagger}
-                 className="lg:w-1/2 space-y-8"
-              >
-                  <motion.h2 variants={smoothEntry} className="text-5xl font-bold">
-                    Real-time <br />
-                    <span className="text-[#50C878]">Conversations</span>
-                  </motion.h2>
-                  <motion.p variants={smoothEntry} className="text-xl text-zinc-400 font-light leading-relaxed">
-                    A messaging experience that feels alive. Sync uses <span className="text-white">Firestore</span> listeners to push updates instantly. Watch the messages flow in real-time.
-                  </motion.p>
-                  
-                  {/* Simulated Chat Feed */}
-                  <motion.div variants={smoothEntry} className="p-6 rounded-3xl bg-[#1A1A1A]/70 border border-[#50C878]/20 backdrop-blur-sm">
-                      <SimulatedChat />
-                  </motion.div>
-              </motion.div>
-
-              <div className="lg:w-1/2 relative">
-                  <div className="grid grid-cols-2 gap-6">
-                      <TiltCard layoutId="chat1" onClick={() => setSelectedImage({ src: "/projects/sync/chats.png", layoutId: "chat1", alt: "Chat List" })} className="translate-y-12">
-                          <Image src="/projects/sync/chats.png" alt="Chat" width={400} height={800} className="rounded-2xl shadow-2xl" />
-                      </TiltCard>
-                      <TiltCard layoutId="chat2" onClick={() => setSelectedImage({ src: "/projects/sync/group-chat-inside-1.png", layoutId: "chat2", alt: "Group Chat" })}>
-                          <Image src="/projects/sync/group-chat-inside-1.png" alt="Group" width={400} height={800} className="rounded-2xl shadow-2xl" />
-                      </TiltCard>
-                  </div>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+           <ShowcaseItem src="/newme/0056.png" title="Hyper-Real Renders" delay={0.1} />
+           <ShowcaseItem src="/newme/0075.png" title="Cinematic Environments" delay={0.2} />
+           <div className="md:col-span-2">
+             <ShowcaseItem src="/newme/0348.png" title="Atmospheric Motion" delay={0.3} />
            </div>
-        </section>
+        </div>
+      </section>
 
-        {/* 2. PERFORMANCE MODE INTERACTIVE */}
-        <section className="container mx-auto px-4">
-            <div className="flex flex-col items-center text-center mb-12 space-y-4">
-                <h2 className="text-5xl font-bold">Performance <span className="text-white/40">Mode</span></h2>
-                <p className="text-zinc-400 max-w-xl">
-                    Sync adapts to your device. Toggle the mode below to see how we optimize rendering by disabling expensive blur effects on lower-end devices.
-                </p>
-            </div>
-            <div className="max-w-4xl mx-auto">
-                <PerformanceDemo />
-            </div>
-        </section>
+      {/* CAPABILITIES (BENTO GRID) */}
+      <section id="services" className="py-32 px-6 md:px-24 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[400px]">
+          <ServiceTile 
+            title="CGI & MOTION" 
+            desc="Hyper-realistic 3D visualizations and high-fidelity product motion graphics in Unreal Engine 5."
+            icon={Camera}
+            className="md:col-span-2"
+          />
+          <ServiceTile 
+            title="WEB ARCH" 
+            desc="Architecting digital flagships. We build high-performance, immersive websites with React and GLSL."
+            icon={Monitor}
+            className="md:col-span-2"
+          />
+          <ServiceTile 
+            title="VFX & POST" 
+            desc="Seamless visual effects integration and cinematic color grading for high-end digital media."
+            icon={Layers}
+            className="md:col-span-2"
+          />
+          <ServiceTile 
+            title="STRATEGY" 
+            desc="Conceptual branding and technical creative direction for forward-thinking industries."
+            icon={Sparkles}
+            className="md:col-span-2"
+          />
+        </div>
+      </section>
 
-        {/* 3. ACADEMIC */}
-        <section className="container mx-auto px-4">
-           <div className="flex flex-col-reverse lg:flex-row items-center gap-20">
-              <div className="lg:w-1/2 relative flex justify-center">
-                  <TiltCard layoutId="academic" onClick={() => setSelectedImage({ src: "/projects/sync/timetable.png", layoutId: "academic", alt: "Timetable" })} className="w-full max-w-md z-10">
-                      <Image src="/projects/sync/timetable.png" alt="Timetable" width={400} height={800} className="w-full rounded-2xl shadow-2xl" />
-                  </TiltCard>
-                  <TiltCard layoutId="hw" onClick={() => setSelectedImage({ src: "/projects/sync/hw-check.png", layoutId: "hw", alt: "Homework" })} className="absolute top-10 -right-10 w-2/3 opacity-80 z-0 grayscale-[30%] hover:grayscale-0 transition-all">
-                      <Image src="/projects/sync/hw-check.png" alt="Homework" width={400} height={800} className="w-full rounded-2xl shadow-xl" />
-                  </TiltCard>
-              </div>
-
-              <motion.div 
-                 initial="hidden"
-                 whileInView="visible"
-                 viewport={{ once: true, margin: "-20%" }}
-                 variants={stagger}
-                 className="lg:w-1/2 space-y-8"
+      {/* CONTACT SECTION (HIGH END) */}
+      <section id="contact" className="py-48 px-6 text-center">
+        <div className="max-w-3xl mx-auto space-y-12">
+           <h3 className="text-white/20 font-mono text-xs uppercase tracking-[1em]">Inquiry</h3>
+           <h2 className="text-5xl md:text-9xl font-black text-white tracking-tighter uppercase leading-none">
+             Elevate <br/> Your <span className="italic text-gold-master">Vision</span>
+           </h2>
+           <div className="pt-12">
+              <a 
+                href="mailto:ashfaq072025@gmail.com" 
+                className="group relative inline-flex items-center gap-8 px-12 py-6 rounded-full border border-[#f6e27a]/30 hover:border-[#f6e27a] transition-all duration-700 overflow-hidden gold-glint-pro"
               >
-                  <motion.h2 variants={smoothEntry} className="text-5xl font-bold">
-                    Offline <br />
-                    <span className="text-blue-400">Intelligence</span>
-                  </motion.h2>
-                  <motion.p variants={smoothEntry} className="text-xl text-zinc-400 font-light leading-relaxed">
-                    No internet? No problem. Sync caches your entire academic life using <span className="text-white font-medium">Room Database</span>. Timetables, dues, and homework are always instantly available.
-                  </motion.p>
-              </motion.div>
+                <span className="text-lg md:text-2xl font-bold uppercase tracking-widest relative z-10 group-hover:text-black transition-colors">Commission Us</span>
+                <ArrowRight className="w-8 h-8 relative z-10 group-hover:translate-x-2 transition-transform group-hover:text-black" />
+                <div className="absolute inset-0 bg-gold-luxury opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+              </a>
            </div>
-        </section>
+        </div>
+      </section>
 
-        {/* 4. ADMIN & SETTINGS GRID */}
-        <section className="container mx-auto px-4">
-            <motion.div 
-               initial="hidden"
-               whileInView="visible"
-               viewport={{ once: true }}
-               variants={stagger}
-               className="text-center mb-16 space-y-4"
-            >
-                <motion.h2 variants={smoothEntry} className="text-5xl font-bold">Control Center</motion.h2>
-                <motion.p variants={smoothEntry} className="text-zinc-400 max-w-2xl mx-auto">
-                    Role-based access ensures students, teachers, and admins see exactly what they need.
-                </motion.p>
-            </motion.div>
-
-            {/* Constraint Grid Width to prevent "Too Big" look */}
-            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-                {[
-                    { src: "/projects/sync/settings.png", label: "Settings", id: "s1" },
-                    { src: "/projects/sync/user-list.png", label: "Directory", id: "s2" },
-                    { src: "/projects/sync/chat-privacy.png", label: "Privacy", id: "s3" }
-                ].map((item, i) => (
-                    <TiltCard key={item.id} layoutId={item.id} onClick={() => setSelectedImage({ src: item.src, layoutId: item.id, alt: item.label })}>
-                        <div className="relative group">
-                            <Image src={item.src} alt={item.label} width={400} height={800} className="w-full rounded-xl shadow-lg border border-white/5" />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                                <span className="text-white font-medium tracking-wide uppercase text-sm border border-white/30 px-4 py-2 rounded-full backdrop-blur-md">View {item.label}</span>
-                            </div>
-                        </div>
-                    </TiltCard>
-                ))}
-            </div>
-        </section>
-
-      </div>
-
-      {/* Footer */}
-      <footer className="py-20 border-t border-white/5 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(80,200,120,0.1),transparent_70%)] pointer-events-none" />
-          <SectionContainer id="footer">
-             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-                              <motion.div 
-                                  initial={{ opacity: 0, x: -20 }}
-                                  whileInView={{ opacity: 1, x: 0 }}
-                                  transition={{ duration: 0.5 }}
-                                  className="text-2xl font-bold tracking-tight"
-                              >
-                                  Sync<span className="text-[#50C878]">.</span>
-                              </motion.div>
-                              <div className="flex gap-8 text-sm text-zinc-500 font-mono uppercase tracking-widest">
-                                  <motion.span 
-                                      initial={{ opacity: 0, y: 10 }}
-                                      whileInView={{ opacity: 1, y: 0 }}
-                                      transition={{ duration: 0.5, delay: 0.2 }}
-                                  >
-                                      Built 2024
-                                  </motion.span>
-                                  <motion.span 
-                                      initial={{ opacity: 0, y: 10 }}
-                                      whileInView={{ opacity: 1, y: 0 }}
-                                      transition={{ duration: 0.5, delay: 0.3 }}
-                                  >
-                                      v1.0.2
-                                  </motion.span>
-                                  <motion.span 
-                                      initial={{ opacity: 0, y: 10 }}
-                                      whileInView={{ opacity: 1, y: 0 }}
-                                      transition={{ duration: 0.5, delay: 0.4 }}
-                                  >
-                                      Android
-                                  </motion.span>
-                              </div>             </div>
-          </SectionContainer>
+      <footer className="py-12 border-t border-white/5 text-center px-6">
+          <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.5em]">
+            ©2026 Celestriyal Studio — A Subsidiary of Ashfaq Global
+          </p>
       </footer>
 
-    </div>
+    </main>
   );
 }
