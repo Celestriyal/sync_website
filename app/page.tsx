@@ -64,7 +64,7 @@ const ServiceTile = ({
           <div className="mb-6 p-4 rounded-2xl bg-white/5 border border-white/10 w-fit group-hover:scale-110 transition-transform">
             <Icon className="w-8 h-8 text-[#f6e27a]" />
           </div>
-          <h3 className="text-3xl font-black text-white uppercase tracking-tighter mb-4 group-hover:text-gold-liquid transition-colors">
+          <h3 className="text-3xl font-black text-white uppercase tracking-tighter mb-4 group-hover:text-gold-master transition-colors">
             {title}
           </h3>
           <p className="text-white/40 font-light leading-relaxed italic">
@@ -91,7 +91,7 @@ export default function CelestriyalPage() {
         <Link href="/sync" className="text-xl font-bold tracking-[0.3em] uppercase hover:text-[#f6e27a] transition-colors">
           Ashfaq — 
         </Link>
-        <Link href="/" className="text-xl font-black tracking-[0.3em] uppercase text-[#f6e27a] hover:text-gold-liquid transition-all">
+        <Link href="/" className="text-xl font-black tracking-[0.3em] uppercase text-[#f6e27a] hover:text-gold-master transition-all">
           Celestriyal
         </Link>
         <div className="hidden md:flex gap-12 font-mono text-[10px] tracking-[0.5em] uppercase text-white/60">
@@ -109,7 +109,7 @@ export default function CelestriyalPage() {
           className="text-center z-10"
         >
           <motion.h1 
-            className="text-[12vw] font-black leading-none tracking-tighter uppercase text-gold-liquid gold-glint-pro px-12 pb-4"
+            className="text-[12vw] font-black leading-none tracking-tighter uppercase text-gold-master gold-glint-pro px-12 pb-4"
           >
             Celestriyal
           </motion.h1>
@@ -157,7 +157,7 @@ export default function CelestriyalPage() {
       <section className="py-32 px-6 md:px-24 max-w-7xl mx-auto">
         <div className="mb-24 text-center">
            <h3 className="text-white/20 font-mono text-xs uppercase tracking-[1em] mb-6">Visual Portfolio</h3>
-           <h2 className="text-5xl md:text-8xl font-black text-gold-liquid uppercase tracking-tighter">The Showcase</h2>
+           <h2 className="text-5xl md:text-8xl font-black text-gold-master uppercase tracking-tighter">The Showcase</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

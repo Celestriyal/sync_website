@@ -30,7 +30,7 @@ function TiltCard({ children, className, onClick, layoutId }: any) {
 
   return (
     <motion.div
-      className="relative perspective-1000 cursor-zoom-in"
+      className={`relative perspective-1000 cursor-zoom-in ${className || ''}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
@@ -86,7 +86,7 @@ function FloatingNotification({ text, icon, delay = 0, x = 0, y = 0 }: any) {
 // 4. Code Snippet
 function CodeSnippet({ className }: any) {
     return (
-        <div className="absolute p-4 rounded-xl bg-[#0F0F0F] border border-white/5 font-mono text-[10px] leading-relaxed text-zinc-500 shadow-2xl">
+        <div className={`absolute p-4 rounded-xl bg-[#0F0F0F] border border-white/5 font-mono text-[10px] leading-relaxed text-zinc-500 shadow-2xl ${className || ''}`}>
             <div className="flex gap-1.5 mb-2">
                 <div className="w-2 h-2 rounded-full bg-red-500/20" />
                 <div className="w-2 h-2 rounded-full bg-yellow-500/20" />
@@ -159,7 +159,7 @@ function PerformanceDemo() {
                 <div className="flex flex-col items-center gap-3">
                     <button 
                         onClick={() => setIsPerformanceMode(!isPerformanceMode)}
-                        className="relative w-16 h-8 rounded-full transition-colors duration-300"
+                        className={`relative w-16 h-8 rounded-full transition-colors duration-300 ${isPerformanceMode ? 'bg-[#50C878]' : 'bg-zinc-800'}`}
                     >
                         <motion.div 
                             animate={{ x: isPerformanceMode ? 32 : 4 }}
@@ -193,9 +193,9 @@ function SimulatedChat() {
                     whileInView={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ delay: msg.delay, duration: 0.5 }}
                     viewport={{ once: true }}
-                    className="flex"
+                    className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}
                 >
-                    <div className="max-w-[80%] px-5 py-3 rounded-2xl text-sm leading-relaxed shadow-lg">
+                    <div className={`max-w-[80%] px-5 py-3 rounded-2xl text-sm leading-relaxed shadow-lg ${msg.sender === 'me' ? 'bg-[#50C878] text-black font-medium' : 'bg-white/5 border border-white/10 text-zinc-300'}`}>
                         {msg.text}
                     </div>
                 </motion.div>

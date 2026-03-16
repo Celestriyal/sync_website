@@ -2,10 +2,13 @@
 const nextConfig = {
   reactStrictMode: true,
   output: 'export',  // Enables static export for GitHub Pages
-  basePath: '/sync_website', // Replace with your repository name
   images: {
     unoptimized: true, // Required for static export
   },
 };
+
+if (process.env.NODE_ENV === 'production') {
+  nextConfig.basePath = '/sync_website';
+}
 
 module.exports = nextConfig;
