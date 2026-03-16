@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
@@ -30,7 +30,7 @@ function TiltCard({ children, className, onClick, layoutId }: any) {
 
   return (
     <motion.div
-      className={elative perspective-1000 cursor-zoom-in \}
+      className="relative perspective-1000 cursor-zoom-in"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
@@ -86,7 +86,7 @@ function FloatingNotification({ text, icon, delay = 0, x = 0, y = 0 }: any) {
 // 4. Code Snippet
 function CodeSnippet({ className }: any) {
     return (
-        <div className={bsolute p-4 rounded-xl bg-[#0F0F0F] border border-white/5 font-mono text-[10px] leading-relaxed text-zinc-500 shadow-2xl \}>
+        <div className="absolute p-4 rounded-xl bg-[#0F0F0F] border border-white/5 font-mono text-[10px] leading-relaxed text-zinc-500 shadow-2xl">
             <div className="flex gap-1.5 mb-2">
                 <div className="w-2 h-2 rounded-full bg-red-500/20" />
                 <div className="w-2 h-2 rounded-full bg-yellow-500/20" />
@@ -159,7 +159,7 @@ function PerformanceDemo() {
                 <div className="flex flex-col items-center gap-3">
                     <button 
                         onClick={() => setIsPerformanceMode(!isPerformanceMode)}
-                        className={elative w-16 h-8 rounded-full transition-colors duration-300 \}
+                        className="relative w-16 h-8 rounded-full transition-colors duration-300"
                     >
                         <motion.div 
                             animate={{ x: isPerformanceMode ? 32 : 4 }}
@@ -193,9 +193,9 @@ function SimulatedChat() {
                     whileInView={{ opacity: 1, y: 0, scale: 1 }}
                     transition={{ delay: msg.delay, duration: 0.5 }}
                     viewport={{ once: true }}
-                    className={lex \}
+                    className="flex"
                 >
-                    <div className={max-w-[80%] px-5 py-3 rounded-2xl text-sm leading-relaxed shadow-lg \}>
+                    <div className="max-w-[80%] px-5 py-3 rounded-2xl text-sm leading-relaxed shadow-lg">
                         {msg.text}
                     </div>
                 </motion.div>
@@ -456,7 +456,7 @@ export default function SyncProjectPage() {
                     <span className="text-blue-400">Intelligence</span>
                   </motion.h2>
                   <motion.p variants={smoothEntry} className="text-xl text-zinc-400 font-light leading-relaxed">
-                    No internet? No problem. Sync caches your entire academic life using <span className="text-white font-medium">Room Database</span>. Timetables, dues, and homework are always instantly available.
+                    No internet? No problem. Sync caches your academic life using <span className="text-white font-medium">Room Database</span>. Timetables, dues, and homework are always instantly available.
                   </motion.p>
               </motion.div>
            </div>
