@@ -1,54 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { 
-  Camera, 
-  Monitor, 
-  Layers, 
-  Sparkles, 
-  ChevronRight,
-  ArrowRight
-} from 'lucide-react';
+import { Camera, Monitor, Layers, Sparkles, ChevronRight, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import './gold.css';
 import GoldBackground from '../components/celestriyal/GoldBackground';
-import SmokeSequence from '../components/celestriyal/SmokeSequence';
 import SpotlightCard from '../components/SpotlightCard';
 
-const ShowcaseItem = ({ src, title, delay }: { src: string, title: string, delay: number }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    viewport={{ once: true }}
-    transition={{ duration: 1, delay }}
-    className="group relative overflow-hidden rounded-[3rem] border border-white/5 h-[400px] md:h-[600px]"
-  >
-    <Image 
-      src={src} 
-      alt={title} 
-      fill 
-      className="object-cover transition-transform duration-[2000ms] group-hover:scale-110"
-    />
-    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
-    <div className="absolute bottom-10 left-10 z-10">
-      <h4 className="text-2xl font-black text-white uppercase tracking-tighter">{title}</h4>
-      <div className="mt-2 w-12 h-[1px] bg-[#f6e27a]"></div>
-    </div>
-  </motion.div>
-);
-
-const ServiceTile = ({ 
-  title, 
-  desc, 
-  icon: Icon, 
-  className 
-}: { 
-  title: string, 
-  desc: string, 
-  icon: any, 
-  className?: string 
-}) => (
+const ServiceTile = ({ title, desc, icon: Icon, className }: { title: string, desc: string, icon: any, className?: string }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -127,50 +86,8 @@ export default function CelestriyalPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-[#f6e27a]/5 rounded-full blur-[150px] -z-10 animate-pulse"></div>
       </section>
 
-      {/* MANIFESTO SECTION WITH SMOKE */}
-      <section className="relative">
-        <div className="absolute inset-0 z-0">
-          <SmokeSequence />
-        </div>
-        
-        <div className="relative z-10 py-48 px-6 md:px-24">
-          <div className="max-w-6xl mx-auto border-t border-white/10 pt-24 grid grid-cols-1 md:grid-cols-2 gap-20 bg-black/20 backdrop-blur-sm rounded-[4rem] p-12 md:p-24 border border-white/5">
-            <div className="space-y-12">
-              <span className="text-[#f6e27a] font-mono text-xs uppercase tracking-[0.5em]">The Manifesto</span>
-              <h2 className="text-4xl md:text-7xl font-bold leading-[0.9] text-white uppercase tracking-tighter">
-                We bridge the gap <br/> 
-                between <span className="italic text-white/20 underline decoration-1 underline-offset-[12px]">physical reality</span> <br/>
-                and digital dreams.
-              </h2>
-            </div>
-            <div className="flex flex-col justify-end">
-              <p className="text-xl md:text-2xl text-white/40 font-light leading-relaxed max-w-md italic">
-                "Founded on the principle of aesthetic precision, Celestriyal creates high-fidelity CGI, cinematic VFX, and architectural web experiences for the bold."
-              </p>
-              <div className="mt-12 w-24 h-[1px] bg-[#f6e27a]/50"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* THE SHOWCASE (NEW IMAGES) */}
-      <section className="py-32 px-6 md:px-24 max-w-7xl mx-auto">
-        <div className="mb-24 text-center">
-           <h3 className="text-white/20 font-mono text-xs uppercase tracking-[1em] mb-6">Visual Portfolio</h3>
-           <h2 className="text-5xl md:text-8xl font-black text-gold-master uppercase tracking-tighter">The Showcase</h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-           <ShowcaseItem src="/newme/0056.png" title="Hyper-Real Renders" delay={0.1} />
-           <ShowcaseItem src="/newme/0075.png" title="Cinematic Environments" delay={0.2} />
-           <div className="md:col-span-2">
-             <ShowcaseItem src="/newme/0348.png" title="Atmospheric Motion" delay={0.3} />
-           </div>
-        </div>
-      </section>
-
       {/* CAPABILITIES (BENTO GRID) */}
-      <section id="services" className="py-32 px-6 md:px-24 max-w-7xl mx-auto">
+      <section id="services" className="py-32 px-6 md:px-24 max-w-7xl mx-auto z-10 relative">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[400px]">
           <ServiceTile 
             title="CGI & MOTION" 
@@ -200,7 +117,7 @@ export default function CelestriyalPage() {
       </section>
 
       {/* CONTACT SECTION (HIGH END) */}
-      <section id="contact" className="py-48 px-6 text-center">
+      <section id="contact" className="py-48 px-6 text-center z-10 relative">
         <div className="max-w-3xl mx-auto space-y-12">
            <h3 className="text-white/20 font-mono text-xs uppercase tracking-[1em]">Inquiry</h3>
            <h2 className="text-5xl md:text-9xl font-black text-white tracking-tighter uppercase leading-none">
@@ -219,7 +136,7 @@ export default function CelestriyalPage() {
         </div>
       </section>
 
-      <footer className="py-12 border-t border-white/5 text-center px-6">
+      <footer className="py-12 border-t border-white/5 text-center px-6 z-10 relative">
           <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.5em]">
             ©2026 Celestriyal Studio — A Subsidiary of Ashfaq Global
           </p>

@@ -1,542 +1,259 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
-import SectionContainer from '@/components/SectionContainer';
+import SpotlightCard from '@/components/SpotlightCard';
+import { 
+  MessageSquare, 
+  BookOpen, 
+  Cpu, 
+  ShieldCheck, 
+  Wrench, 
+  Users, 
+  Wifi, 
+  Calculator,
+  Layers,
+  Zap
+} from 'lucide-react';
 
-// --- Utility Components ---
+const images = {
+  home: "/projects/sync/home-page.png",
+  chats: "/projects/sync/chats.png",
+  group: "/projects/sync/group-chat-inside-1.png",
+  timetable: "/projects/sync/timetable.png",
+  hw: "/projects/sync/hw-check.png",
+  settings: "/projects/sync/settings.png",
+  userList: "/projects/sync/user-list.png",
+  privacy: "/projects/sync/chat-privacy.png",
+  chatFeatures: "/projects/sync/chat-features.png"
+};
 
-// 1. 3D Tilt Card
-function TiltCard({ children, className, onClick, layoutId }: any) {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+const FeatureCard = ({ title, desc, icon: Icon, image, delay }: any) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.6, delay }}
+  >
+    <SpotlightCard className="h-full bg-white/[0.02] border border-white/5 rounded-[2.5rem] p-8 md:p-10 hover:border-[#50C878]/30 transition-all group overflow-hidden relative">
+      <div className="flex flex-col h-full relative z-10">
+        <div className="mb-6 p-4 rounded-2xl bg-[#50C878]/10 w-fit group-hover:scale-110 transition-transform">
+          <Icon className="w-6 h-6 text-[#50C878]" />
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-4 uppercase tracking-tighter">{title}</h3>
+        <p className="text-zinc-400 font-light leading-relaxed mb-8">{desc}</p>
+        
+        {image && (
+          <div className="mt-auto relative w-full h-[300px] translate-y-10 group-hover:translate-y-4 transition-transform duration-700">
+            <Image src={image} alt={title} fill className="object-contain" />
+          </div>
+        )}
+      </div>
+    </SpotlightCard>
+  </motion.div>
+);
 
-  const handleMouseMove = ({ currentTarget, clientX, clientY }: any) => {
-    const { left, top, width, height } = currentTarget.getBoundingClientRect();
-    mouseX.set(clientX - left - width / 2);
-    mouseY.set(clientY - top - height / 2);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-  };
-
-  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [4, -4]), { stiffness: 100, damping: 30 });
-  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-4, 4]), { stiffness: 100, damping: 30 });
-  const scale = useSpring(useTransform(mouseX, [-300, 300], [1, 1.02]), { stiffness: 100, damping: 30 });
-
+export default function SyncProjectPage() {
   return (
-    <motion.div
-      className={`relative perspective-1000 cursor-zoom-in ${className || ''}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-      layoutId={layoutId}
-      whileHover={{ zIndex: 20 }}
-    >
-      <motion.div
-        style={{ rotateX, rotateY, scale, transformStyle: "preserve-3d" }}
-        className="w-full h-full"
-      >
-        {children}
-      </motion.div>
-    </motion.div>
-  );
-}
-
-// 2. Background Grid Pattern
-function BackgroundGrid() {
-  return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
-      <div className="absolute inset-0 bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black_70%)]" />
+    <div className="bg-[#050505] min-h-screen text-[#EAEAEA] selection:bg-[#50C878] selection:text-black font-sans">
       
-      {/* Added more background elements */}
-      <div className="absolute top-1/4 left-10 w-px h-32 bg-gradient-to-b from-transparent via-[#50C878]/30 to-transparent" />
-      <div className="absolute bottom-1/3 right-20 w-32 h-px bg-gradient-to-r from-transparent via-[#50C878]/30 to-transparent" />
-      <div className="absolute top-10 right-1/4 w-2 h-2 rounded-full bg-[#50C878]/20 animate-pulse" />
-    </div>
-  );
-}
-
-// 3. Floating Notification (Darker Theme)
-function FloatingNotification({ text, icon, delay = 0, x = 0, y = 0 }: any) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.8 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay, duration: 0.8, type: "spring" }}
-      className="absolute z-20 flex items-center gap-3 px-4 py-3 bg-[#121212]/90 backdrop-blur-xl border border-[#50C878]/20 rounded-2xl shadow-2xl"
-      style={{ left: x, top: y }}
-    >
-      <div className="w-8 h-8 rounded-full bg-[#50C878]/10 flex items-center justify-center text-[#50C878]">
-        {icon}
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-[#50C878]/5 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[800px] h-[800px] bg-blue-500/5 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px]" />
       </div>
-      <div className="flex flex-col">
-        <span className="text-xs text-zinc-200 font-medium">{text}</span>
-        <span className="text-[10px] text-zinc-500">Just now</span>
-      </div>
-    </motion.div>
-  );
-}
 
-// 4. Code Snippet
-function CodeSnippet({ className }: any) {
-    return (
-        <div className={`absolute p-4 rounded-xl bg-[#0F0F0F] border border-white/5 font-mono text-[10px] leading-relaxed text-zinc-500 shadow-2xl ${className || ''}`}>
-            <div className="flex gap-1.5 mb-2">
-                <div className="w-2 h-2 rounded-full bg-red-500/20" />
-                <div className="w-2 h-2 rounded-full bg-yellow-500/20" />
-                <div className="w-2 h-2 rounded-full bg-green-500/20" />
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-8 flex justify-between items-center bg-black/20 backdrop-blur-xl border-b border-white/5">
+        <Link href="/" className="text-xl font-bold tracking-[0.3em] uppercase hover:text-[#50C878] transition-colors">
+          Ashfaq — 
+        </Link>
+        <div className="flex gap-8 font-mono text-[10px] tracking-[0.5em] uppercase text-white/60 items-center">
+          <Link href="/" className="hover:text-[#50C878] transition-colors hidden md:block text-zinc-500">Celestriyal</Link>
+          <div className="h-4 w-px bg-white/10 hidden md:block"></div>
+          <span className="text-[#50C878] font-black">Sync Platform</span>
+        </div>
+      </nav>
+
+      <main className="relative z-10 pt-48 pb-24 px-6 md:px-12 max-w-7xl mx-auto space-y-48">
+        
+        {/* --- SECTION 1: HERO --- */}
+        <section className="flex flex-col lg:flex-row items-center justify-between gap-20">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+            className="lg:w-1/2 space-y-10"
+          >
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#50C878]/5 border border-[#50C878]/10 text-[#50C878] text-xs font-mono tracking-widest">
+               <span className="w-2 h-2 rounded-full bg-[#50C878] animate-ping" />
+               ENTERPRISE GRADE MOBILE OS
             </div>
-            <p><span className="text-purple-400">data</span> class <span className="text-yellow-200">User</span>(</p>
-            <p className="pl-2"><span className="text-blue-400">val</span> uid: <span className="text-[#50C878]">String</span>,</p>
-            <p className="pl-2"><span className="text-blue-400">val</span> role: <span className="text-[#50C878]">Role</span> = <span className="text-orange-400">STUDENT</span></p>
-            <p>)</p>
-        </div>
-    )
-}
-
-// 5. Infinite Tech Marquee
-function InfiniteMarquee() {
-    const techs = ["Kotlin", "Firebase", "Room DB", "Coroutines", "Flow", "Hilt", "Retrofit", "Jetpack", "Material You", "Git"];
-    return (
-        <div className="relative w-full overflow-hidden py-10 bg-[#0A0A0A] border-y border-white/5 backdrop-blur-sm">
-            <motion.div 
-                className="flex gap-16 whitespace-nowrap"
-                animate={{ x: [0, -1000] }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            >
-                {[...techs, ...techs, ...techs].map((tech, i) => (
-                    <span key={i} className="text-2xl md:text-4xl font-bold text-zinc-800 uppercase tracking-widest hover:text-[#50C878] transition-colors cursor-default">
-                        {tech}
-                    </span>
-                ))}
-            </motion.div>
-        </div>
-    );
-}
-
-// 6. Interactive Performance Mode Demo (Darker Theme)
-function PerformanceDemo() {
-    const [isPerformanceMode, setIsPerformanceMode] = useState(false);
-
-    return (
-        <div className="w-full p-8 rounded-3xl border border-white/10 bg-[#080808] relative overflow-hidden group">
-            {/* Vibrant background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-[#50C878]/20 blur-3xl" />
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay" />
-            
-            <div className="relative z-10 flex flex-col items-center justify-center min-h-[400px] gap-8">
-
-                {/* The UI Card changing based on mode */}
-                <motion.div 
-                    animate={{ 
-                        backdropFilter: isPerformanceMode ? "blur(0px)" : "blur(12px)",
-                        backgroundColor: isPerformanceMode ? "#111" : "rgba(20, 20, 20, 0.6)",
-                        borderColor: isPerformanceMode ? "#333" : "rgba(80, 200, 120, 0.2)"
-                    }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full max-w-sm p-6 rounded-2xl border shadow-2xl"
-                >
-                    <div className="h-4 w-1/3 bg-white/10 rounded-full mb-4" />
-                    <div className="space-y-3">
-                        <div className="h-2 w-full bg-white/5 rounded-full" />
-                        <div className="h-2 w-5/6 bg-white/5 rounded-full" />
-                    </div>
-                    <div className="mt-6 flex justify-between items-center">
-                        <div className="h-8 w-8 rounded-full bg-[#50C878]/10" />
-                        <div className="px-4 py-1.5 rounded-full bg-white/5 text-[10px] text-zinc-500 border border-white/5">
-                            {isPerformanceMode ? "Solid Surface" : "Glassmorphism"}
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Toggle Control */}
-                <div className="flex flex-col items-center gap-3">
-                    <button 
-                        onClick={() => setIsPerformanceMode(!isPerformanceMode)}
-                        className={`relative w-16 h-8 rounded-full transition-colors duration-300 ${isPerformanceMode ? 'bg-[#50C878]' : 'bg-zinc-800'}`}
-                    >
-                        <motion.div 
-                            animate={{ x: isPerformanceMode ? 32 : 4 }}
-                            className="absolute top-1 w-6 h-6 bg-white rounded-full shadow-md"
-                        />
-                    </button>
-                    <p className="text-sm font-mono text-zinc-500">
-                        PERFORMANCE MODE: <span className={isPerformanceMode ? "text-[#50C878]" : "text-zinc-300"}>{isPerformanceMode ? "ON" : "OFF"}</span>
-                    </p>
+            <h1 className="text-7xl md:text-[9rem] font-black tracking-tighter leading-[0.8] text-white uppercase italic">
+              Syn<span className="text-[#50C878]">c</span>
+            </h1>
+            <p className="text-2xl text-zinc-400 font-light leading-relaxed max-w-lg">
+              Not just an app, but a <span className="text-white font-medium">digital nervous system</span> for your campus life. Everything connected, instantly.
+            </p>
+            <div className="flex gap-6">
+                <div className="flex flex-col">
+                    <span className="text-3xl font-black text-white">0ms</span>
+                    <span className="text-[10px] font-mono uppercase text-zinc-500 tracking-widest">Sync Latency</span>
+                </div>
+                <div className="h-12 w-px bg-white/10"></div>
+                <div className="flex flex-col">
+                    <span className="text-3xl font-black text-white">100%</span>
+                    <span className="text-[10px] font-mono uppercase text-zinc-500 tracking-widest">Offline Ready</span>
                 </div>
             </div>
-        </div>
-    );
-}
-
-// 7. Simulated Chat Feed
-function SimulatedChat() {
-    const messages = [
-        { id: 1, text: "Hey! Did you check the new timetable?", sender: "them", delay: 0 },
-        { id: 2, text: "Yeah, looking good. We have a free slot on Friday!", sender: "me", delay: 1.5 },
-        { id: 3, text: "Awesome. Btw, uploaded the assignment?", sender: "them", delay: 3 },
-        { id: 4, text: "Just did. Syncing is super fast now 🚀", sender: "me", delay: 4.5 },
-    ];
-
-    return (
-        <div className="w-full max-w-md mx-auto space-y-4 font-sans">
-            {messages.map((msg) => (
-                <motion.div
-                    key={msg.id}
-                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ delay: msg.delay, duration: 0.5 }}
-                    viewport={{ once: true }}
-                    className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}
-                >
-                    <div className={`max-w-[80%] px-5 py-3 rounded-2xl text-sm leading-relaxed shadow-lg ${msg.sender === 'me' ? 'bg-[#50C878] text-black font-medium' : 'bg-white/5 border border-white/10 text-zinc-300'}`}>
-                        {msg.text}
-                    </div>
-                </motion.div>
-            ))}
-            <motion.div 
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 6 }}
-                viewport={{ once: true }}
-                className="flex gap-2 items-center text-xs text-zinc-500 pl-4"
-            >
-                <span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce" />
-                <span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce [animation-delay:0.2s]" />
-                <span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce [animation-delay:0.4s]" />
-                Typing...
-            </motion.div>
-        </div>
-    )
-}
-
-// 8. Random Glows
-function RandomGlows() {
-    return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-[10%] left-[5%] w-[400px] h-[400px] bg-[#50C878]/5 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '7s' }} />
-            <div className="absolute top-[40%] right-[10%] w-[300px] h-[300px] bg-[#50C878]/5 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
-            <div className="absolute bottom-[10%] left-[15%] w-[500px] h-[500px] bg-[#50C878]/5 rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '8s', animationDelay: '1s' }} />
-        </div>
-    );
-}
-
-// Main Page Component
-export default function SyncProjectPage() {
-  const [selectedImage, setSelectedImage] = useState<any>(null);
-  const containerRef = useRef(null);
-  
-  const { scrollYProgress } = useScroll({ target: containerRef });
-  const yHero = useTransform(scrollYProgress, [0, 0.2], [0, -100]);
-  const opacityHero = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-
-  const smoothEntry = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
-  };
-
-  const stagger = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.15 } }
-  };
-
-  return (
-    <div ref={containerRef} className="bg-black min-h-screen text-[#EAEAEA] selection:bg-[#50C878] selection:text-black overflow-x-hidden relative">
-      
-      <BackgroundGrid />
-      <RandomGlows />
-
-      {/* Lightbox Overlay */}
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
-            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
-            onClick={() => setSelectedImage(null)}
-          >
-            <motion.div
-              layoutId={selectedImage.layoutId}
-              className="relative w-auto h-auto max-w-[95vw] max-h-[95vh]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Image
-                src={selectedImage.src}
-                alt={selectedImage.alt}
-                width={1920}
-                height={1080}
-                className="object-contain w-full h-full rounded-lg shadow-2xl"
-              />
-              <button 
-                onClick={() => setSelectedImage(null)}
-                className="absolute -top-12 right-0 text-white/50 hover:text-white transition-colors"
-              >
-                CLOSE
-              </button>
-            </motion.div>
           </motion.div>
-        )}
-      </AnimatePresence>
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center pt-20 px-4">
-        
-        {/* Navigation Overlays */}
-        <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-8 flex justify-between items-center mix-blend-difference">
-          <Link href="/" className="text-xl font-bold tracking-[0.3em] uppercase hover:text-[#50C878] transition-colors">
-            Ashfaq — 
-          </Link>
-          <div className="hidden md:flex gap-12 font-mono text-[10px] tracking-[0.5em] uppercase text-white/60">
-            <Link href="/" className="hover:text-[#50C878] transition-colors">Home</Link>
-            <Link href="/sync/tech-sheet" className="hover:text-[#50C878] transition-colors">Tech Sheet</Link>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 1.2, type: "spring" }}
+            className="lg:w-1/2 flex justify-center relative"
+          >
+            <div className="relative w-[320px] h-[650px] rounded-[3.5rem] p-3 bg-[#111] border border-white/10 shadow-[0_50px_100px_-20px_rgba(80,200,120,0.3)]">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-3xl z-20"></div>
+              <div className="relative w-full h-full overflow-hidden rounded-[2.8rem]">
+                <Image src={images.home} alt="Sync Dashboard" fill className="object-cover" priority />
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* --- SECTION 2: HOW IT WORKS (NON-TECHNICAL) --- */}
+        <section className="space-y-24">
+            <div className="max-w-3xl">
+                <h2 className="text-white/20 font-mono text-xs uppercase tracking-[1em] mb-6">The Philosophy</h2>
+                <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter leading-tight uppercase">
+                    How it works <br/>
+                    <span className="text-zinc-600">for the user.</span>
+                </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-zinc-400">
+                <div className="space-y-6">
+                    <div className="text-6xl font-black text-[#50C878]/20">01</div>
+                    <h4 className="text-white text-xl font-bold uppercase tracking-tighter">Unified Identity</h4>
+                    <p className="leading-relaxed">Sync recognizes you by your college credentials. Once you verify your college email, you're automatically sorted into your specific Year, Department, and Section. No setup required.</p>
+                </div>
+                <div className="space-y-6">
+                    <div className="text-6xl font-black text-[#50C878]/20">02</div>
+                    <h4 className="text-white text-xl font-bold uppercase tracking-tighter">Always Current</h4>
+                    <p className="leading-relaxed">Whether it's a change in the timetable, a new homework assignment, or a sudden announcement from the department head, the information finds you. You don't have to look for it.</p>
+                </div>
+                <div className="space-y-6">
+                    <div className="text-6xl font-black text-[#50C878]/20">03</div>
+                    <h4 className="text-white text-xl font-bold uppercase tracking-tighter">Campus Economy</h4>
+                    <p className="leading-relaxed">Beyond just academics, Sync hosts a local marketplace. Need help with a project? Use the Freelancing hub. Looking for a hackathon partner? Use the Teammate Finder.</p>
+                </div>
+            </div>
+        </section>
+
+        {/* --- SECTION 3: FEATURE MATRIX --- */}
+        <section className="space-y-16">
+          <div className="text-center">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase italic">The Full Feature Suite</h2>
           </div>
-        </nav>
 
-        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-[#50C878]/10 rounded-full blur-[120px] animate-pulse pointer-events-none" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <FeatureCard 
+              title="Hyper-Chat" 
+              icon={MessageSquare}
+              desc="Instant individual and group messaging with dual-swipe reply logic, image sharing, and follow requests."
+              image={images.chats}
+              delay={0.1}
+            />
+            <FeatureCard 
+              title="Academic Core" 
+              icon={BookOpen}
+              desc="Class-isolated Homework, Announcements, and Dues. See only what matters to your specific section."
+              image={images.hw}
+              delay={0.2}
+            />
+            <FeatureCard 
+              title="Smart Timetable" 
+              icon={Layers}
+              desc="A zero-latency timetable that syncs with the cloud but works 100% offline using Room Database."
+              image={images.timetable}
+              delay={0.3}
+            />
+            <FeatureCard 
+              title="Tool Suite" 
+              icon={Wrench}
+              desc="Built-in Image to PDF converter, Image Compressor, and smart GPA calculators with 'Target Mode'."
+              delay={0.4}
+            />
+            <FeatureCard 
+              title="Network SSRF" 
+              icon={Wifi}
+              desc="A revolutionary 'Share WiFi' system allowing users to broadcast and connect to campus hotspots via QR."
+              delay={0.5}
+            />
+            <FeatureCard 
+              title="OLED Engines" 
+              icon={Zap}
+              desc="True black themes for OLED devices, performance mode toggles, and customizable mechanical haptics."
+              image={images.settings}
+              delay={0.6}
+            />
+          </div>
+        </section>
 
-        <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-          
-          <motion.div 
-            style={{ y: yHero, opacity: opacityHero }}
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
-            className="space-y-8 text-center lg:text-left"
-          >
-            <motion.div variants={smoothEntry} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#50C878]/10 border border-[#50C878]/20 text-[#50C878] text-xs font-mono tracking-wider">
-               <span className="w-2 h-2 rounded-full bg-[#50C878] animate-pulse" />
-               V1.0.2 RELEASE
-            </motion.div>
+        {/* --- SECTION 4: SECURITY --- */}
+        <section className="py-24 rounded-[4rem] bg-zinc-900/30 border border-white/5 p-12 md:p-24 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-[#50C878]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+            <div className="flex flex-col lg:flex-row gap-20 items-center relative z-10">
+                <div className="lg:w-1/2 space-y-8">
+                    <ShieldCheck className="w-16 h-16 text-[#50C878]" />
+                    <h3 className="text-5xl font-black text-white uppercase tracking-tighter">Hardened <br/> Privacy.</h3>
+                    <p className="text-xl text-zinc-400 font-light leading-relaxed">
+                        Every bit of data is protected by class-isolated Firestore rules. Your chats, homework, and profile are only visible to verified members of your own class. 
+                    </p>
+                    <ul className="space-y-4 font-mono text-xs uppercase tracking-widest text-zinc-500">
+                        <li className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-[#50C878] rounded-full" /> 14-Day Account Deletion Grace</li>
+                        <li className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-[#50C878] rounded-full" /> Mandatory Email Authentication</li>
+                        <li className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-[#50C878] rounded-full" /> Global Force Logout Protocol</li>
+                    </ul>
+                </div>
+                <div className="lg:w-1/2">
+                    <div className="relative w-full h-[600px]">
+                        <Image src={images.privacy} alt="Privacy" fill className="object-contain rounded-3xl shadow-2xl" />
+                    </div>
+                </div>
+            </div>
+        </section>
 
-            <motion.h1 variants={smoothEntry} className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tighter leading-[0.9] text-white">
-              Sync
-            </motion.h1>
-            
-            <motion.p variants={smoothEntry} className="text-xl md:text-2xl text-zinc-400 max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
-              The <span className="text-white font-normal">ultimate campus companion</span>. <br/>
-              Built with Kotlin for speed, Firebase for scale, and glassmorphism for style.
-            </motion.p>
-            
-            <motion.div variants={smoothEntry} className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4">
-               <button onClick={() => document.getElementById('chat-section')?.scrollIntoView({ behavior: 'smooth' })} className="px-8 py-3 rounded-full bg-[#50C878] text-black font-bold hover:bg-[#40b068] transition-colors shadow-[0_0_30px_rgba(80,200,120,0.3)]">
-                 Explore Features
-               </button>
-               {/* TECH SHEET BUTTON */}
-               <Link href="/sync/tech-sheet">
-                   <button className="px-8 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#50C878]/50 transition-all flex items-center gap-2 group">
-                     Tech Sheet
-                     <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                     </svg>
-                   </button>
-               </Link>
-            </motion.div>
-          </motion.div>
+        {/* --- SECTION 5: UTILITIES --- */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="p-12 rounded-[3rem] bg-blue-500/5 border border-blue-500/10 space-y-6">
+                <Calculator className="w-10 h-10 text-blue-400" />
+                <h4 className="text-3xl font-bold text-white uppercase italic tracking-tighter">GPA Optimization</h4>
+                <p className="text-zinc-400 font-light">The smart GPA calculator doesn't just calculate; it predicts. Tell it your target CGPA, and it tells you exactly what you need in the next semester.</p>
+            </div>
+            <div className="p-12 rounded-[3rem] bg-purple-500/5 border border-purple-500/10 space-y-6">
+                <Users className="w-10 h-10 text-purple-400" />
+                <h4 className="text-3xl font-bold text-white uppercase italic tracking-tighter">Marketplace Hub</h4>
+                <p className="text-zinc-400 font-light">From delivering coffee to building websites, the Freelancing module creates a secure campus economy with delivery proofs and milestone tracking.</p>
+            </div>
+        </section>
 
-          <motion.div 
-             initial={{ opacity: 0, x: 100 }}
-             animate={{ opacity: 1, x: 0 }}
-             transition={{ duration: 1.2, ease: "circOut" }}
-             className="relative flex justify-center lg:justify-end h-[600px] items-center"
-          >
-             <div className="relative z-10">
-                 <TiltCard layoutId="hero-dashboard" onClick={() => setSelectedImage({ src: "/projects/sync/home-page.png", layoutId: "hero-dashboard", alt: "Home" })} className="w-[320px] md:w-[380px]">
-                    <Image 
-                        src="/projects/sync/home-page.png" 
-                        alt="Sync Dashboard" 
-                        width={400} 
-                        height={800}
-                        priority
-                        className="w-full h-auto rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/10"
-                    />
-                 </TiltCard>
-                 
-                 <FloatingNotification 
-                   text="New Assignment Added"
-                   icon={<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>}
-                   x="-20%" y="20%" delay={0.5} 
-                 />
-                 <FloatingNotification 
-                   text="Group Chat Active"
-                   icon={<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>}
-                   x="80%" y="60%" delay={0.8} 
-                 />
-             </div>
-             
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-[#50C878]/20 to-blue-500/20 rounded-full blur-[100px] -z-10" />
-             <CodeSnippet className="top-20 -left-10 z-0 opacity-60 hidden lg:block" />
-          </motion.div>
+      </main>
+
+      <footer className="py-20 border-t border-white/5 text-center relative z-10 bg-black/50 backdrop-blur-md">
+        <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.5em] mb-4">
+          Developed & Engineered by Ashfaq Global Studio
+        </p>
+        <div className="flex justify-center gap-8 text-[10px] font-mono text-zinc-700 uppercase tracking-widest">
+            <span>v1.2.3 Build</span>
+            <span>Kotlin Core</span>
+            <span>Firebase Cloud</span>
         </div>
-      </section>
-
-      {/* Infinite Marquee */}
-      <InfiniteMarquee />
-
-      {/* Feature Sections */}
-      <div className="space-y-48 py-32 relative z-10" id="chat-section">
-        
-        {/* 1. CHAT & REAL-TIME DEMO */}
-        <section className="container mx-auto px-4">
-           <div className="flex flex-col lg:flex-row items-center gap-20">
-              <motion.div 
-                 initial="hidden"
-                 whileInView="visible"
-                 viewport={{ once: true, margin: "-20%" }}
-                 variants={stagger}
-                 className="lg:w-1/2 space-y-8"
-              >
-                  <motion.h2 variants={smoothEntry} className="text-5xl font-bold">
-                    Real-time <br />
-                    <span className="text-[#50C878]">Conversations</span>
-                  </motion.h2>
-                  <motion.p variants={smoothEntry} className="text-xl text-zinc-400 font-light leading-relaxed">
-                    A messaging experience that feels alive. Sync uses <span className="text-white">Firestore</span> listeners to push updates instantly. Watch the messages flow in real-time.
-                  </motion.p>
-                  
-                  {/* Simulated Chat Feed */}
-                  <motion.div variants={smoothEntry} className="p-6 rounded-3xl bg-[#1A1A1A]/70 border border-[#50C878]/20 backdrop-blur-sm">
-                      <SimulatedChat />
-                  </motion.div>
-              </motion.div>
-
-              <div className="lg:w-1/2 relative">
-                  <div className="grid grid-cols-2 gap-6">
-                      <TiltCard layoutId="chat1" onClick={() => setSelectedImage({ src: "/projects/sync/chats.png", layoutId: "chat1", alt: "Chat List" })} className="translate-y-12">
-                          <Image src="/projects/sync/chats.png" alt="Chat" width={400} height={800} className="rounded-2xl shadow-2xl" />
-                      </TiltCard>
-                      <TiltCard layoutId="chat2" onClick={() => setSelectedImage({ src: "/projects/sync/group-chat-inside-1.png", layoutId: "chat2", alt: "Group Chat" })}>
-                          <Image src="/projects/sync/group-chat-inside-1.png" alt="Group" width={400} height={800} className="rounded-2xl shadow-2xl" />
-                      </TiltCard>
-                  </div>
-              </div>
-           </div>
-        </section>
-
-        {/* 2. PERFORMANCE MODE INTERACTIVE */}
-        <section className="container mx-auto px-4">
-            <div className="flex flex-col items-center text-center mb-12 space-y-4">
-                <h2 className="text-5xl font-bold">Performance <span className="text-white/40">Mode</span></h2>
-                <p className="text-zinc-400 max-w-xl">
-                    Sync adapts to your device. Toggle the mode below to see how we optimize rendering by disabling expensive blur effects on lower-end devices.
-                </p>
-            </div>
-            <div className="max-w-4xl mx-auto">
-                <PerformanceDemo />
-            </div>
-        </section>
-
-        {/* 3. ACADEMIC */}
-        <section className="container mx-auto px-4">
-           <div className="flex flex-col-reverse lg:flex-row items-center gap-20">
-              <div className="lg:w-1/2 relative flex justify-center">
-                  <TiltCard layoutId="academic" onClick={() => setSelectedImage({ src: "/projects/sync/timetable.png", layoutId: "academic", alt: "Timetable" })} className="w-full max-w-md z-10">
-                      <Image src="/projects/sync/timetable.png" alt="Timetable" width={400} height={800} className="w-full rounded-2xl shadow-2xl" />
-                  </TiltCard>
-                  <TiltCard layoutId="hw" onClick={() => setSelectedImage({ src: "/projects/sync/hw-check.png", layoutId: "hw", alt: "Homework" })} className="absolute top-10 -right-10 w-2/3 opacity-80 z-0 grayscale-[30%] hover:grayscale-0 transition-all">
-                      <Image src="/projects/sync/hw-check.png" alt="Homework" width={400} height={800} className="w-full rounded-2xl shadow-xl" />
-                  </TiltCard>
-              </div>
-
-              <motion.div 
-                 initial="hidden"
-                 whileInView="visible"
-                 viewport={{ once: true, margin: "-20%" }}
-                 variants={stagger}
-                 className="lg:w-1/2 space-y-8"
-              >
-                  <motion.h2 variants={smoothEntry} className="text-5xl font-bold">
-                    Offline <br />
-                    <span className="text-blue-400">Intelligence</span>
-                  </motion.h2>
-                  <motion.p variants={smoothEntry} className="text-xl text-zinc-400 font-light leading-relaxed">
-                    No internet? No problem. Sync caches your academic life using <span className="text-white font-medium">Room Database</span>. Timetables, dues, and homework are always instantly available.
-                  </motion.p>
-              </motion.div>
-           </div>
-        </section>
-
-        {/* 4. ADMIN & SETTINGS GRID */}
-        <section className="container mx-auto px-4">
-            <motion.div 
-               initial="hidden"
-               whileInView="visible"
-               viewport={{ once: true }}
-               variants={stagger}
-               className="text-center mb-16 space-y-4"
-            >
-                <motion.h2 variants={smoothEntry} className="text-5xl font-bold">Control Center</motion.h2>
-                <motion.p variants={smoothEntry} className="text-zinc-400 max-w-2xl mx-auto">
-                    Role-based access ensures students, teachers, and admins see exactly what they need.
-                </motion.p>
-            </motion.div>
-
-            {/* Constraint Grid Width to prevent "Too Big" look */}
-            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-                {[
-                    { src: "/projects/sync/settings.png", label: "Settings", id: "s1" },
-                    { src: "/projects/sync/user-list.png", label: "Directory", id: "s2" },
-                    { src: "/projects/sync/chat-privacy.png", label: "Privacy", id: "s3" }
-                ].map((item, i) => (
-                    <TiltCard key={item.id} layoutId={item.id} onClick={() => setSelectedImage({ src: item.src, layoutId: item.id, alt: item.label })}>
-                        <div className="relative group">
-                            <Image src={item.src} alt={item.label} width={400} height={800} className="w-full rounded-xl shadow-lg border border-white/5" />
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-xl">
-                                <span className="text-white font-medium tracking-wide uppercase text-sm border border-white/30 px-4 py-2 rounded-full backdrop-blur-md">View {item.label}</span>
-                            </div>
-                        </div>
-                    </TiltCard>
-                ))}
-            </div>
-        </section>
-
-      </div>
-
-      {/* Footer */}
-      <footer className="py-20 border-t border-white/5 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(80,200,120,0.1),transparent_70%)] pointer-events-none" />
-          <SectionContainer id="footer">
-             <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-                              <motion.div 
-                                  initial={{ opacity: 0, x: -20 }}
-                                  whileInView={{ opacity: 1, x: 0 }}
-                                  transition={{ duration: 0.5 }}
-                                  className="text-2xl font-bold tracking-tight"
-                              >
-                                  Sync<span className="text-[#50C878]">.</span>
-                              </motion.div>
-                              <div className="flex gap-8 text-sm text-zinc-500 font-mono uppercase tracking-widest">
-                                  <motion.span 
-                                      initial={{ opacity: 0, y: 10 }}
-                                      whileInView={{ opacity: 1, y: 0 }}
-                                      transition={{ duration: 0.5, delay: 0.2 }}
-                                  >
-                                      Built 2024
-                                  </motion.span>
-                                  <motion.span 
-                                      initial={{ opacity: 0, y: 10 }}
-                                      whileInView={{ opacity: 1, y: 0 }}
-                                      transition={{ duration: 0.5, delay: 0.3 }}
-                                  >
-                                      v1.0.2
-                                  </motion.span>
-                                  <motion.span 
-                                      initial={{ opacity: 0, y: 10 }}
-                                      whileInView={{ opacity: 1, y: 0 }}
-                                      transition={{ duration: 0.5, delay: 0.4 }}
-                                  >
-                                      Android
-                                  </motion.span>
-                              </div>             </div>
-          </SectionContainer>
       </footer>
-
     </div>
   );
 }
