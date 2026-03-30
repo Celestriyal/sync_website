@@ -6,8 +6,8 @@ import Footer from '../components/Footer'; // Adjust path if needed
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Ashfaq - Portfolio',
-  description: 'Ashfaq\'s personal portfolio website',
+  title: 'celestriyal studios',
+  description: 'Digital Couture & Cinematic Realism',
   icons: {
     icon: '/logo.png',
     apple: '/logo.png',

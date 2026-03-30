@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import SpotlightCard from '@/components/SpotlightCard';
 import { 
   MessageSquare, 
@@ -14,41 +13,30 @@ import {
   Wifi, 
   Calculator,
   Layers,
-  Zap
+  Zap,
+  Clock,
+  LayoutGrid,
+  Database,
+  ArrowRightLeft,
+  Terminal
 } from 'lucide-react';
 
-const images = {
-  home: "/projects/sync/home-page.png",
-  chats: "/projects/sync/chats.png",
-  group: "/projects/sync/group-chat-inside-1.png",
-  timetable: "/projects/sync/timetable.png",
-  hw: "/projects/sync/hw-check.png",
-  settings: "/projects/sync/settings.png",
-  userList: "/projects/sync/user-list.png",
-  privacy: "/projects/sync/chat-privacy.png",
-  chatFeatures: "/projects/sync/chat-features.png"
-};
-
-const FeatureCard = ({ title, desc, icon: Icon, image, delay }: any) => (
+const FeatureCard = ({ title, subtitle, desc, icon: Icon, delay, className = "" }: any) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.6, delay }}
+    className={className}
   >
-    <SpotlightCard className="h-full bg-white/[0.02] border border-white/5 rounded-[2.5rem] p-8 md:p-10 hover:border-[#50C878]/30 transition-all group overflow-hidden relative">
+    <SpotlightCard className="h-full bg-white/[0.02] border border-white/5 rounded-[2rem] p-8 md:p-10 hover:border-[#50C878]/30 transition-all group relative overflow-hidden">
       <div className="flex flex-col h-full relative z-10">
-        <div className="mb-6 p-4 rounded-2xl bg-[#50C878]/10 w-fit group-hover:scale-110 transition-transform">
+        <div className="mb-6 p-4 rounded-2xl bg-[#50C878]/10 w-fit group-hover:scale-110 transition-transform duration-500">
           <Icon className="w-6 h-6 text-[#50C878]" />
         </div>
-        <h3 className="text-2xl font-bold text-white mb-4 uppercase tracking-tighter">{title}</h3>
-        <p className="text-zinc-400 font-light leading-relaxed mb-8">{desc}</p>
-        
-        {image && (
-          <div className="mt-auto relative w-full h-[300px] translate-y-10 group-hover:translate-y-4 transition-transform duration-700">
-            <Image src={image} alt={title} fill className="object-contain" />
-          </div>
-        )}
+        {subtitle && <span className="text-[10px] font-mono uppercase text-zinc-600 tracking-[0.3em] mb-4 block leading-none">{subtitle}</span>}
+        <h3 className="text-2xl font-black text-white mb-4 uppercase tracking-tighter italic">{title}</h3>
+        <p className="text-zinc-400 font-normal leading-relaxed text-sm md:text-base">{desc}</p>
       </div>
     </SpotlightCard>
   </motion.div>
@@ -56,7 +44,7 @@ const FeatureCard = ({ title, desc, icon: Icon, image, delay }: any) => (
 
 export default function SyncProjectPage() {
   return (
-    <div className="bg-[#050505] min-h-screen text-[#EAEAEA] selection:bg-[#50C878] selection:text-black font-sans">
+    <div className="bg-[#050505] min-h-screen text-[#EAEAEA] selection:bg-[#50C878] selection:text-black font-sans overflow-x-hidden">
       
       {/* Dynamic Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
@@ -65,193 +53,227 @@ export default function SyncProjectPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px]" />
       </div>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-8 flex justify-between items-center bg-black/20 backdrop-blur-xl border-b border-white/5">
-        <Link href="/" className="text-xl font-bold tracking-[0.3em] uppercase hover:text-[#50C878] transition-colors">
-          Ashfaq — 
-        </Link>
-        <div className="flex gap-8 font-mono text-[10px] tracking-[0.5em] uppercase text-white/60 items-center">
-          <Link href="/" className="hover:text-[#50C878] transition-colors hidden md:block text-zinc-500">Celestriyal</Link>
-          <div className="h-4 w-px bg-white/10 hidden md:block"></div>
-          <span className="text-[#50C878] font-black">Sync Platform</span>
-        </div>
-      </nav>
-
       <main className="relative z-10 pt-48 pb-24 px-6 md:px-12 max-w-7xl mx-auto space-y-48">
         
         {/* --- SECTION 1: HERO --- */}
-        <section className="flex flex-col lg:flex-row items-center justify-between gap-20">
+        <section className="flex flex-col items-center text-center space-y-12">
           <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="lg:w-1/2 space-y-10"
+            className="space-y-6"
           >
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#50C878]/5 border border-[#50C878]/10 text-[#50C878] text-xs font-mono tracking-widest">
-               <span className="w-2 h-2 rounded-full bg-[#50C878] animate-ping" />
-               ENTERPRISE GRADE MOBILE OS
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#50C878]/5 border border-[#50C878]/10 text-[#50C878] text-[10px] font-mono tracking-widest uppercase">
+               <span className="w-2 h-2 rounded-full bg-[#50C878] animate-pulse" />
+               MAJESTIC CAMPUS OS v1.2.3
             </div>
-            <h1 className="text-7xl md:text-[9rem] font-black tracking-tighter leading-[0.8] text-white uppercase italic">
+            <h1 className="text-[14vw] md:text-[12vw] font-black tracking-tighter leading-[0.8] text-white uppercase italic">
               Syn<span className="text-[#50C878]">c</span>
             </h1>
-            <p className="text-2xl text-zinc-400 font-light leading-relaxed max-w-lg">
-              Not just an app, but a <span className="text-white font-medium">digital nervous system</span> for your campus life. Everything connected, instantly.
+            <p className="text-xl md:text-2xl text-zinc-500 font-light leading-relaxed max-w-2xl mx-auto italic">
+              A high-end, zero-latency digital nervous system. <br/>
+              <span className="text-white font-medium italic">Engineered for the elite campus experience.</span>
             </p>
-            <div className="flex gap-6">
-                <div className="flex flex-col">
-                    <span className="text-3xl font-black text-white">0ms</span>
-                    <span className="text-[10px] font-mono uppercase text-zinc-500 tracking-widest">Sync Latency</span>
-                </div>
-                <div className="h-12 w-px bg-white/10"></div>
-                <div className="flex flex-col">
-                    <span className="text-3xl font-black text-white">100%</span>
-                    <span className="text-[10px] font-mono uppercase text-zinc-500 tracking-widest">Offline Ready</span>
-                </div>
-            </div>
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 1.2, type: "spring" }}
-            className="lg:w-1/2 flex justify-center relative"
-          >
-            <div className="relative w-[320px] h-[650px] rounded-[3.5rem] p-3 bg-[#111] border border-white/10 shadow-[0_50px_100px_-20px_rgba(80,200,120,0.3)]">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-3xl z-20"></div>
-              <div className="relative w-full h-full overflow-hidden rounded-[2.8rem]">
-                <Image src={images.home} alt="Sync Dashboard" fill className="object-cover" priority />
-              </div>
-            </div>
-          </motion.div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 pt-12">
+                <div className="flex flex-col items-center">
+                    <span className="text-4xl font-black text-white italic tracking-tighter uppercase italic uppercase">0ms</span>
+                    <span className="text-[8px] font-mono uppercase text-zinc-700 tracking-[0.5em]">Latency Sync</span>
+                </div>
+                <div className="flex flex-col items-center">
+                    <span className="text-4xl font-black text-white italic tracking-tighter uppercase italic uppercase">100%</span>
+                    <span className="text-[8px] font-mono uppercase text-zinc-700 tracking-[0.5em]">Offline Ready</span>
+                </div>
+                <div className="flex flex-col items-center">
+                    <span className="text-4xl font-black text-white italic tracking-tighter uppercase italic uppercase">60+</span>
+                    <span className="text-[8px] font-mono uppercase text-zinc-700 tracking-[0.5em]">Module Cluster</span>
+                </div>
+                <div className="flex flex-col items-center">
+                    <span className="text-4xl font-black text-white italic tracking-tighter uppercase italic uppercase">OLED</span>
+                    <span className="text-[8px] font-mono uppercase text-zinc-700 tracking-[0.5em]">Engine Architecture</span>
+                </div>
+          </div>
         </section>
 
-        {/* --- SECTION 2: HOW IT WORKS (NON-TECHNICAL) --- */}
-        <section className="space-y-24">
-            <div className="max-w-3xl">
-                <h2 className="text-white/20 font-mono text-xs uppercase tracking-[1em] mb-6">The Philosophy</h2>
-                <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter leading-tight uppercase">
-                    How it works <br/>
-                    <span className="text-zinc-600">for the user.</span>
-                </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-zinc-400">
-                <div className="space-y-6">
-                    <div className="text-6xl font-black text-[#50C878]/20">01</div>
-                    <h4 className="text-white text-xl font-bold uppercase tracking-tighter">Unified Identity</h4>
-                    <p className="leading-relaxed">Sync recognizes you by your college credentials. Once you verify your college email, you're automatically sorted into your specific Year, Department, and Section. No setup required.</p>
-                </div>
-                <div className="space-y-6">
-                    <div className="text-6xl font-black text-[#50C878]/20">02</div>
-                    <h4 className="text-white text-xl font-bold uppercase tracking-tighter">Always Current</h4>
-                    <p className="leading-relaxed">Whether it's a change in the timetable, a new homework assignment, or a sudden announcement from the department head, the information finds you. You don't have to look for it.</p>
-                </div>
-                <div className="space-y-6">
-                    <div className="text-6xl font-black text-[#50C878]/20">03</div>
-                    <h4 className="text-white text-xl font-bold uppercase tracking-tighter">Campus Economy</h4>
-                    <p className="leading-relaxed">Beyond just academics, Sync hosts a local marketplace. Need help with a project? Use the Freelancing hub. Looking for a hackathon partner? Use the Teammate Finder.</p>
-                </div>
-            </div>
-        </section>
-
-        {/* --- SECTION 3: FEATURE MATRIX --- */}
+        {/* --- SECTION 2: THE MAJESTIC GRID --- */}
         <section className="space-y-16">
-          <div className="text-center">
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase italic">The Full Feature Suite</h2>
+          <div className="max-w-2xl">
+            <h2 className="text-[#50C878] font-mono text-[10px] uppercase tracking-[1em] mb-6">Technical Infrastructure</h2>
+            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-tight uppercase italic">
+                The Feature <br/>
+                <span className="text-zinc-800">Architecture.</span>
+            </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[280px]">
+            {/* Hyper-Chat */}
             <FeatureCard 
-              title="Hyper-Chat" 
+              className="md:col-span-8"
+              title="Hyper-Chat v2" 
+              subtitle="Real-time Interaction"
               icon={MessageSquare}
-              desc="Instant individual and group messaging with dual-swipe reply logic, image sharing, and follow requests."
-              image={images.chats}
+              desc="Instagram-style dual-swipe logic (RTL for Timestamps, LTR for Reply) with mechanical haptic feedback. Supports Individual, Class, and Department channels with borderless image sharing."
               delay={0.1}
             />
+
+            {/* Smart Timetable */}
             <FeatureCard 
-              title="Academic Core" 
-              icon={BookOpen}
-              desc="Class-isolated Homework, Announcements, and Dues. See only what matters to your specific section."
-              image={images.hw}
+              className="md:col-span-4"
+              title="Zero-Latency Table" 
+              subtitle="Scheduling Engine"
+              icon={Clock}
+              desc="Dynamic 50/55-min options with 'Smart Sync' (Room/Firestore) for instant loading. ViewPager2 enabled."
               delay={0.2}
             />
+
+            {/* Academic Core */}
             <FeatureCard 
-              title="Smart Timetable" 
-              icon={Layers}
-              desc="A zero-latency timetable that syncs with the cloud but works 100% offline using Room Database."
-              image={images.timetable}
+              className="md:col-span-4"
+              title="Academic Core" 
+              subtitle="Data Isolation"
+              icon={BookOpen}
+              desc="Year, Department, and Section isolated Homework, Announcements, and Dues with mandatory class-filtering."
               delay={0.3}
             />
+
+            {/* GPA Calculators */}
             <FeatureCard 
-              title="Tool Suite" 
-              icon={Wrench}
-              desc="Built-in Image to PDF converter, Image Compressor, and smart GPA calculators with 'Target Mode'."
+              className="md:col-span-4"
+              title="Target Mode GPA" 
+              subtitle="Smart Math"
+              icon={Calculator}
+              desc="Predictive SGPA/CGPA engine with target estimation. Tells you exactly what you need to achieve your goal."
               delay={0.4}
             />
+
+            {/* OLED Themes */}
             <FeatureCard 
-              title="Network SSRF" 
-              icon={Wifi}
-              desc="A revolutionary 'Share WiFi' system allowing users to broadcast and connect to campus hotspots via QR."
+              className="md:col-span-4"
+              title="OLED Engines" 
+              subtitle="Visual Identity"
+              icon={Zap}
+              desc="True Black (#000000) OLED theme, Midnight Purple, and Glassmorphism suites with performance mode toggles."
               delay={0.5}
             />
+
+            {/* Tool Suite */}
             <FeatureCard 
-              title="OLED Engines" 
-              icon={Zap}
-              desc="True black themes for OLED devices, performance mode toggles, and customizable mechanical haptics."
-              image={images.settings}
+              className="md:col-span-6"
+              title="Professional Tools" 
+              subtitle="Utility Hub"
+              icon={Wrench}
+              desc="High-speed Image to PDF converter with document scanning & reordering. Real-time Image Compressor with instant preview."
               delay={0.6}
+            />
+
+            {/* WiFi Share */}
+            <FeatureCard 
+              className="md:col-span-6"
+              title="WiFi SSRF Network" 
+              subtitle="Connectivity"
+              icon={Wifi}
+              desc="On-device QR extraction from screenshots. Share campus WiFi via Direct Connect logic with 3-hour session expiry."
+              delay={0.7}
+            />
+
+            {/* Freelancing */}
+            <FeatureCard 
+              className="md:col-span-8"
+              title="Freelancing Hub" 
+              subtitle="Campus Economy"
+              icon={Users}
+              desc="Secure marketplace with delivery proofs (mandatory compressed <20KB uploads). Integrated chat during active orders."
+              delay={0.8}
+            />
+
+            {/* Admin Panel */}
+            <FeatureCard 
+              className="md:col-span-4"
+              title="Majestic Admin" 
+              subtitle="Governance"
+              icon={LayoutGrid}
+              desc="Bento-grid admin panel with whitelist security for specialized emails (admin1-5) and user governance."
+              delay={0.9}
             />
           </div>
         </section>
 
-        {/* --- SECTION 4: SECURITY --- */}
-        <section className="py-24 rounded-[4rem] bg-zinc-900/30 border border-white/5 p-12 md:p-24 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-[#50C878]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-            <div className="flex flex-col lg:flex-row gap-20 items-center relative z-10">
-                <div className="lg:w-1/2 space-y-8">
-                    <ShieldCheck className="w-16 h-16 text-[#50C878]" />
-                    <h3 className="text-5xl font-black text-white uppercase tracking-tighter">Hardened <br/> Privacy.</h3>
-                    <p className="text-xl text-zinc-400 font-light leading-relaxed">
-                        Every bit of data is protected by class-isolated Firestore rules. Your chats, homework, and profile are only visible to verified members of your own class. 
+        {/* --- SECTION 3: SYSTEM HARDENING --- */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start py-32">
+            <div className="space-y-12 sticky top-32">
+                <div className="space-y-6">
+                    <h2 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter">Persistence <br/> <span className="text-[#50C878]">Architecture.</span></h2>
+                    <p className="text-xl text-zinc-500 font-light leading-relaxed max-w-lg italic">
+                        The bedrock of Sync. A multi-layer storage strategy ensuring zero data loss and 100% offline capability.
                     </p>
-                    <ul className="space-y-4 font-mono text-xs uppercase tracking-widest text-zinc-500">
-                        <li className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-[#50C878] rounded-full" /> 14-Day Account Deletion Grace</li>
-                        <li className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-[#50C878] rounded-full" /> Mandatory Email Authentication</li>
-                        <li className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-[#50C878] rounded-full" /> Global Force Logout Protocol</li>
-                    </ul>
                 </div>
-                <div className="lg:w-1/2">
-                    <div className="relative w-full h-[600px]">
-                        <Image src={images.privacy} alt="Privacy" fill className="object-contain rounded-3xl shadow-2xl" />
+                <div className="space-y-8">
+                    <div className="flex gap-8 items-start">
+                        <div className="p-3 rounded-xl bg-[#50C878]/5 text-[#50C878] border border-[#50C878]/10">
+                            <Database className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h4 className="text-white font-black uppercase tracking-tighter italic">Source.CACHE Logic</h4>
+                            <p className="text-zinc-600 text-sm mt-1 italic leading-relaxed">Prioritizing local Room Database instances for zero-latency UI loading, followed by immediate background Firestore synchronization.</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-8 items-start">
+                        <div className="p-3 rounded-xl bg-[#50C878]/5 text-[#50C878] border border-[#50C878]/10">
+                            <ArrowRightLeft className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h4 className="text-white font-black uppercase tracking-tighter italic">Document-Level Sync</h4>
+                            <p className="text-zinc-600 text-sm mt-1 italic leading-relaxed">Real-time sync using documentChanges. Syncs edits and deletions locally without requiring a full collection reload.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="p-12 md:p-24 rounded-[4rem] border border-white/5 bg-white/[0.01] relative overflow-hidden group italic">
+                <div className="space-y-10">
+                    <div className="space-y-2">
+                        <span className="text-[8px] font-mono text-zinc-600 uppercase tracking-widest">Database Schema</span>
+                        <h3 className="text-white font-bold text-2xl uppercase italic tracking-tighter italic">Manifest Cluster</h3>
+                    </div>
+                    
+                    <div className="space-y-6">
+                        {[
+                            { label: "Primary Database", value: "Firestore Cloud" },
+                            { label: "Local Persistence", value: "Room SQL v18" },
+                            { label: "Asset Storage", value: "Firebase Storage" },
+                            { label: "Auth Protocol", value: "Firebase Auth 2.0" },
+                            { label: "Notification Engine", value: "FCM v1 Pulse" },
+                            { label: "App Integrity", value: "App Check (Debug)" }
+                        ].map((stat, i) => (
+                            <div key={i} className="flex justify-between items-end border-b border-white/5 pb-4 group-hover:border-[#50C878]/20 transition-colors">
+                                <span className="text-[10px] font-mono text-zinc-700 uppercase tracking-[0.3em]">{stat.label}</span>
+                                <span className="text-white font-black uppercase italic tracking-tighter text-lg italic tracking-widest">{stat.value}</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
         </section>
 
-        {/* --- SECTION 5: UTILITIES --- */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="p-12 rounded-[3rem] bg-blue-500/5 border border-blue-500/10 space-y-6">
-                <Calculator className="w-10 h-10 text-blue-400" />
-                <h4 className="text-3xl font-bold text-white uppercase italic tracking-tighter">GPA Optimization</h4>
-                <p className="text-zinc-400 font-light">The smart GPA calculator doesn't just calculate; it predicts. Tell it your target CGPA, and it tells you exactly what you need in the next semester.</p>
-            </div>
-            <div className="p-12 rounded-[3rem] bg-purple-500/5 border border-purple-500/10 space-y-6">
-                <Users className="w-10 h-10 text-purple-400" />
-                <h4 className="text-3xl font-bold text-white uppercase italic tracking-tighter">Marketplace Hub</h4>
-                <p className="text-zinc-400 font-light">From delivering coffee to building websites, the Freelancing module creates a secure campus economy with delivery proofs and milestone tracking.</p>
-            </div>
-        </section>
-
       </main>
 
-      <footer className="py-20 border-t border-white/5 text-center relative z-10 bg-black/50 backdrop-blur-md">
-        <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.5em] mb-4">
-          Developed & Engineered by Ashfaq Global Studio
-        </p>
-        <div className="flex justify-center gap-8 text-[10px] font-mono text-zinc-700 uppercase tracking-widest">
-            <span>v1.2.3 Build</span>
-            <span>Kotlin Core</span>
-            <span>Firebase Cloud</span>
+      <footer className="py-32 border-t border-white/5 text-center relative z-10 bg-black/50 backdrop-blur-md italic">
+        <div className="max-w-xl mx-auto space-y-12">
+            <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter italic tracking-[0.2em]">Developed & Engineered <br/> by <span className="text-[#50C878]">Celestriyal Studios</span></h3>
+            <p className="text-[10px] font-mono text-zinc-600 uppercase tracking-[0.5em] leading-loose italic">
+              Sync Platform is a proprietary campus OS built with Kotlin, Room, and Firebase Cloud. <br/> All rights reserved 2026.
+            </p>
+            <div className="flex justify-center gap-12 text-[10px] font-mono text-zinc-800 uppercase tracking-[0.4em]">
+                <span>Build 1.2.3_8</span>
+                <span>Kotlin 2.0</span>
+                <span>Cloud Functions v2</span>
+            </div>
+            <div className="pt-12">
+                <Link href="/" className="px-12 py-4 rounded-full border border-white/10 text-white font-mono text-[10px] uppercase tracking-[0.5em] hover:bg-white/5 hover:border-[#50C878]/40 transition-all italic">
+                    Return to Genesis
+                </Link>
+            </div>
         </div>
       </footer>
     </div>
