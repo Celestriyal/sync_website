@@ -5,10 +5,7 @@ const nextConfig = {
   images: {
     unoptimized: true, // Required for static export
   },
+  trailingSlash: true, // Recommended for GitHub Pages
 };
-
-if (process.env.NODE_ENV === 'production') {
-  nextConfig.basePath = '/sync_website';
-}
 
 module.exports = nextConfig;
