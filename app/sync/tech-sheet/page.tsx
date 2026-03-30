@@ -1,8 +1,7 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import SectionContainer from '@/components/SectionContainer';
 
 // Background Glow Component
 function RandomGlows() {
@@ -40,7 +39,7 @@ export default function TechSheetPage() {
       </nav>
 
       <div className="pt-32 pb-20 relative z-10">
-        <SectionContainer id="tech-sheet">
+        <div id="tech-sheet" className="max-w-7xl mx-auto px-6">
             
             {/* Header */}
             <div className="mb-20 text-center space-y-4">
@@ -138,7 +137,7 @@ export default function TechSheetPage() {
                         </li>
                         <li className="flex gap-3">
                             <span className="text-[#50C878] font-mono">02.</span>
-                            <span><strong>Firestore Security Rules:</strong> Database reads/writes are protected by rules that check the equest.auth.uid and the user's ole field. For example, only users with ole: 'admin' can write to the nnouncements collection.</span>
+                            <span><strong>Firestore Security Rules:</strong> Database reads/writes are protected by rules that check the request.auth.uid and the user's role field. For example, only users with role: 'admin' can write to the announcements collection.</span>
                         </li>
                     </ul>
                 </ArchitectureCard>
@@ -155,7 +154,7 @@ export default function TechSheetPage() {
                     <ul className="space-y-3 text-sm text-zinc-300">
                         <li className="flex gap-3">
                             <span className="text-[#50C878] font-mono">01.</span>
-                            <span><strong>Version Check:</strong> On startup, the app fetches a metadata document from Firestore containing the latest ersionCode and pkUrl.</span>
+                            <span><strong>Version Check:</strong> On startup, the app fetches a metadata document from Firestore containing the latest versionCode and apkUrl.</span>
                         </li>
                         <li className="flex gap-3">
                             <span className="text-[#50C878] font-mono">02.</span>
@@ -168,7 +167,7 @@ export default function TechSheetPage() {
                     </ul>
                 </ArchitectureCard>
 
-                {/* Module 5: Privacy & User Safety (NEW) */}
+                {/* Module 5: Privacy & User Safety */}
                 <ArchitectureCard 
                     title="Privacy & Safety Protocols" 
                     icon={<LockIcon />}
@@ -180,11 +179,11 @@ export default function TechSheetPage() {
                     <ul className="space-y-3 text-sm text-zinc-300">
                         <li className="flex gap-3">
                             <span className="text-[#50C878] font-mono">01.</span>
-                            <span><strong>Block Logic:</strong> Blocking a user creates a document in a locked_users sub-collection. Firestore queries filter messages from blocked users at the database level, ensuring they are never even fetched to the device.</span>
+                            <span><strong>Block Logic:</strong> Blocking a user creates a document in a blocked_users sub-collection. Firestore queries filter messages from blocked users at the database level, ensuring they are never even fetched to the device.</span>
                         </li>
                         <li className="flex gap-3">
                             <span className="text-[#50C878] font-mono">02.</span>
-                            <span><strong>Unfriend Mechanism:</strong> Unfriending triggers a cloud function or atomic batch write that removes the user ID from both users' riends array, instantly revoking private chat access.</span>
+                            <span><strong>Unfriend Mechanism:</strong> Unfriending triggers a cloud function or atomic batch write that removes the user ID from both users' friends array, instantly revoking private chat access.</span>
                         </li>
                         <li className="flex gap-3">
                             <span className="text-[#50C878] font-mono">03.</span>
@@ -193,7 +192,7 @@ export default function TechSheetPage() {
                     </ul>
                 </ArchitectureCard>
 
-                {/* Module 6: Advanced Academic Features (NEW) */}
+                {/* Module 6: Advanced Academic Features */}
                 <ArchitectureCard 
                     title="Academic Modules" 
                     icon={<CalendarIcon />}
@@ -253,4 +252,3 @@ const ShieldIcon = () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24
 const UpdateIcon = () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>;
 const LockIcon = () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>;
 const CalendarIcon = () => <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
-00-2 2v12a2 2 0 002 2z" /></svg>;
