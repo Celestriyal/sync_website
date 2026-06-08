@@ -23,3 +23,10 @@ yarn-debug.log*
 ts-debug.log*
 .env.local
 .vercel
+
+# Firebase & Local Setup Info
+firebase-info.txt
+firebase-setup.txt
+
+# Raw Assets (Original high-res images)
+/img/
