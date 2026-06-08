@@ -11,6 +11,11 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
+// Debug check (won't leak values)
+if (typeof window !== "undefined" && !firebaseConfig.apiKey) {
+  console.warn("Firebase configuration is missing. Ensure GitHub Secrets are set as REPOSITORY secrets and the build has finished.");
+}
+
 // Initialize Firebase only once to prevent SSR errors
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
